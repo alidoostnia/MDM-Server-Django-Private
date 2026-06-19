@@ -3,8 +3,6 @@ from django.contrib.auth.password_validation import validate_password, get_passw
 from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.utils.safestring import mark_safe
-from django.contrib.admin.forms import AdminAuthenticationForm
-from captcha.fields import CaptchaField
 
 
 from .models import Account
@@ -49,6 +47,7 @@ class AccountCreationForm(forms.ModelForm):
         if commit:
             account.save()
         return account
+
 
 class AccountChangeForm(forms.ModelForm):
     password_help_text = mark_safe(

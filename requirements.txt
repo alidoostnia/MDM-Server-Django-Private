@@ -45,4 +45,3 @@ urllib3==2.5.0
 vine==5.1.0
 wcwidth==0.2.13
 django-jazzmin==3.0.1
-django-simple-captcha==0.5.17
