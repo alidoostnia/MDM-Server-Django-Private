@@ -1,0 +1,103 @@
+name: Deploy
+
+on:
+  # workflow_dispatch:
+  #   inputs:
+  #     deploy_branch:
+  #       description: 'Branch to deploy (e.g. develop)'
+  #       required: true
+  #       default: 'develop'
+  push:
+    tags:
+      - 'dev-*'
+      - 'prod-*'
+
+jobs:
+  deploy:
+    name: Manual deploy to dev server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          # ref: ${{ github.event.inputs.deploy_branch }}
+          ref: ${{ github.ref_name }}
+
+      - name: Prepare SSH key
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Ensure known_hosts (optional)
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts || true
+
+      - name: Rsync project to server (code + compose) — preserve server-only files
+        env:
+          RSYNC_RSH: "ssh -o StrictHostKeyChecking=yes -l ${{ secrets.SERVER_USER }}"
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "mkdir -p ${{ secrets.SERVER_DEPLOY_PATH }}"
+
+          rsync -avz --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='venv' \
+            --exclude='*.pyc' \
+            --exclude='__pycache__' \
+            --exclude='.env' \
+            --exclude='emqx' \
+            ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_DEPLOY_PATH }}
+
+      - name: Ensure .env and emqx folder exist on server
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
+            missing=false
+            if [ ! -f '${{ secrets.SERVER_DEPLOY_PATH }}/.env' ]; then
+              echo 'ERROR: .env file not found at ${{ secrets.SERVER_DEPLOY_PATH }}'
+              missing=true
+            else
+              echo '.env exists'
+            fi
+            if [ ! -d '${{ secrets.SERVER_DEPLOY_PATH }}/emqx' ]; then
+              echo 'ERROR: emqx folder not found at ${{ secrets.SERVER_DEPLOY_PATH }}/emqx'
+              missing=true
+            else
+              echo 'emqx folder exists'
+            fi
+            if [ \"\$missing\" = true ]; then
+              exit 1
+            fi
+          "
+
+      - name: Ensure emqx init script is executable on server
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
+            set -euo pipefail
+            if [ -f '${{ secrets.SERVER_DEPLOY_PATH }}/emqx_init/init_mqtt.bash' ]; then
+              chmod +x '${{ secrets.SERVER_DEPLOY_PATH }}/emqx_init/init_mqtt.bash'
+              echo 'emqx_init/init_bash.bash is executable'
+            else
+              echo 'emqx_init/init_bash.bash not found; skipping chmod'
+            fi
+          "
+
+      - name: Deploy with docker compose
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} bash -s <<'REMOTE'
+            set -euo pipefail
+            cd "${{ secrets.SERVER_DEPLOY_PATH }}"
+            docker compose down --remove-orphans || true
+            docker compose pull || true
+            docker compose up -d --build
+            docker compose ps
+          REMOTE
+      
+      - name: Record deployed version
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "echo '${{ github.ref_name }} (commit ${{ github.sha }}) — deployed at $(date)' > ${{ secrets.SERVER_DEPLOY_PATH }}/DEPLOYED_VERSION.txt"
+
+
+      - name: Done
+        run: echo "Deployment finished."

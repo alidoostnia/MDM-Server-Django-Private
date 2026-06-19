@@ -1,0 +1,23 @@
+name: Django Tests
+
+
+on:
+  workflow_call:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Copy test env
+        run: cp .env.test .env
+
+      - name: Build and run test stack
+        run: docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from django_test
+
+      - name: Shutdown test containers
+        if: always()
+        run: docker compose -f docker-compose.test.yml down -v

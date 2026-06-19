@@ -1,0 +1,97 @@
+name: Services CI
+
+on:
+  workflow_call:
+
+jobs:
+  services-up:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Copy test env as runtime env
+        run: cp .env.test .env
+
+      - name: Write EMQX API keys file (test)
+        run: |
+          mkdir -p emqx
+          echo "user_creation_api_key:test_api_secret:administrator" > emqx/api_keys.conf
+
+
+      - name: Make init_mqtt.bash executable
+        run: chmod +x emqx_init/init_mqtt.bash
+
+      - name: Cleanup old containers
+        run: docker compose down -v --remove-orphans || true
+
+      - name: Ensure required Docker networks exist
+        run: |
+          for net in web_net app_net; do
+            docker network create $net || true
+          done
+
+      - name: Build and start full stack
+        run: docker compose up -d --build
+
+      - name: Show container status
+        run: docker compose ps
+  
+      - name: Show Django container logs (startup)
+        run: docker compose logs django_web || true
+
+
+      - name: Wait for Postgres
+        run: |
+          until docker compose exec pg_db pg_isready -h pg_db -U test_pguser; do
+            sleep 2
+          done
+
+      - name: Run migrations check
+        run: docker exec django_web python manage.py migrate --noinput --fake-initial
+
+      - name: Check for missing migrations
+        run: docker exec django_web python manage.py makemigrations --check --dry-run
+
+      - name: Debug containers
+        if: failure()
+        run: |
+          echo "==== Sleeping 5s before fetching logs ===="
+          sleep 5
+
+          echo "==== Docker ps (all containers) ===="
+          docker ps -a
+
+          echo "==== Docker Compose ps ===="
+          docker compose ps
+
+          echo "==== MQTT Setup logs ===="
+          docker compose logs mqtt_setup || true
+
+          echo "==== Django logs (last 200 lines) ===="
+          docker compose logs --tail=200 django_web || true
+
+          echo "==== Postgres logs (last 50 lines) ===="
+          docker compose logs --tail=50 pg_db || true
+
+          echo "==== MongoDB logs (last 50 lines) ===="
+          docker compose logs --tail=50 mongo_db || true
+
+          echo "==== Redis logs (last 50 lines) ===="
+          docker compose logs --tail=50 redis || true
+
+          echo "==== EMQX logs (last 50 lines) ===="
+          docker compose logs --tail=50 emqx || true
+
+          echo "==== Celery logs (last 50 lines) ===="
+          docker compose logs --tail=50 celery || true
+
+          echo "==== Mongo Express logs (last 50 lines) ===="
+          docker compose logs --tail=50 django_worker || true
+
+          echo "==== End of logs ===="
+
+      - name: Shutdown containers
+        if: always()
+        run: docker compose down -v

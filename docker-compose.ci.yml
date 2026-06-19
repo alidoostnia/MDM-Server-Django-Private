@@ -1,0 +1,7 @@
+services:
+  django_web:
+    image: ghcr.io/${ORG}/djangoimage:ci-${COMMIT_SHA}
+  django_worker:
+    image: ghcr.io/${ORG}/djangoimage:ci-${COMMIT_SHA}
+  celery:
+    image: ghcr.io/${ORG}/djangoimage:ci-${COMMIT_SHA}

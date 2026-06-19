@@ -1,0 +1,200 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+{% block content %}
+
+
+<div class="logs-shell">
+  <section class="logs-hero">
+    <h1>Device Activity Logs</h1>
+    <p>Filter by device/policy, watch live updates, and export data for reporting.</p>
+  </section>
+
+  <section class="logs-card">
+    <form method="get" class="search-form">
+      <div class="form-field-wide">
+        <label for="q_field">Search logs</label>
+        <input id="q_field" type="text" name="q" placeholder="Search log text, action, module" value="{{ filters.q }}" />
+      </div>
+
+      <div class="form-field">
+        <label for="device_id">Device</label>
+        <select id="device_id" name="device_id">
+          <option value="">All devices</option>
+          {% for option in device_options %}
+            <option value="{{ option.id }}" {% if filters.device_id == option.id %}selected{% endif %}>{{ option.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label for="policy_id">Policy</label>
+        <select id="policy_id" name="policy_id">
+          <option value="">All policies</option>
+          {% for option in policy_options %}
+            <option value="{{ option.id }}" {% if filters.policy_id == option.id %}selected{% endif %}>{{ option.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-field-sm">
+        <label for="start">Start time</label>
+        <input id="start"
+          type="datetime-local"
+          name="start"
+          value="{{ filters.start|default:'' }}">
+      </div>
+
+      <div class="form-field-sm">
+        <label for="end">End time</label>
+        <input id="end"
+              type="datetime-local"
+              name="end"
+              value="{{ filters.end|default:'' }}">
+      </div>
+
+
+
+      <div class="form-controls-row">
+        <div class="form-field-sm live-refresh-field">
+          <label for="refresh_ms">Live refresh (ms)</label>
+          <input id="refresh_ms" type="number" name="refresh_ms" min="1000" step="1000" value="{{ refresh_ms }}" />
+        </div>
+
+        <div class="form-field-sm live-field">
+          <label for="live_toggle">Live updates</label>
+          <input id="live_toggle"
+                type="checkbox"
+                name="live"
+                value="1"
+                {% if filters.live %}checked{% endif %} />
+        </div>
+
+        <div class="form-actions">
+          <button class="button logs-button" type="submit">Apply filters</button>
+          <a class="button logs-link-button" href="{% url 'admin:device_logs' %}">Reset</a>
+
+          <select id="export_format" name="export_format" class="select-export">
+            <option value="json">JSON</option>
+            <option value="excel">Excel (.xls)</option>
+          </select>
+          <button class="button logs-button" type="button" id="export_btn">Export</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <section class="logs-card">
+    <div class="logs-toolbar">
+      <div class="logs-metric">Total logs: <span id="total_count">{{ total }}</span><span id="live_status" class="live-state"></span></div>
+    </div>
+
+    <div class="logs-table-wrap">
+      <table class="listing logs-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Device</th>
+            <th>Policy</th>
+            <th>Module</th>
+            <th>Log snippet</th>
+            <th>Action snippet</th>
+            <th>View</th>
+          </tr>
+        </thead>
+        <tbody id="logs_table_body">
+          {% include "admin/logs/includes/device_logs_rows.html" with docs=docs %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="logs-pagination">
+      {% if page_obj.has_previous %}
+        <a class="button logs-link-button" href="?page={{ page_obj.previous_page_number }}&{{ base_qs }}">Previous</a>
+      {% endif %}
+
+      <form method="get" class="inline-page-form">
+        {% for key, value in request.GET.items %}
+          {% if key != 'page' %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}">
+          {% endif %}
+        {% endfor %}
+        <label for="page_input">Page:</label>
+        <input id="page_input" type="number" name="page" min="1" max="{{ page_obj.paginator.num_pages }}"
+               value="{{ page_obj.number }}" class="page-input">
+        <span>of {{ page_obj.paginator.num_pages }}</span>
+        <button class="button logs-button" type="submit">Go</button>
+      </form>
+
+      {% if page_obj.has_next %}
+        <a class="button logs-link-button" href="?page={{ page_obj.next_page_number }}&{{ base_qs }}">Next</a>
+      {% endif %}
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  const liveToggle = document.getElementById('live_toggle');
+  const refreshInput = document.getElementById('refresh_ms');
+  const statusEl = document.getElementById('live_status');
+  const totalEl = document.getElementById('total_count');
+  const tbody = document.getElementById('logs_table_body');
+  const exportBtn = document.getElementById('export_btn');
+  const exportFormat = document.getElementById('export_format');
+  let timer = null;
+
+  function currentParams() {
+    const params = new URLSearchParams(new FormData(document.querySelector('form.search-form')));
+    params.delete('export_format');
+    return params;
+  }
+
+  function runLiveFetch() {
+    const params = currentParams();
+    params.set('live', '1');
+    fetch("{% url 'admin:device_logs_live' %}?" + params.toString(), {headers: {'X-Requested-With': 'XMLHttpRequest'}})
+      .then(r => r.json())
+      .then(data => {
+        if (!data.ok) {
+          statusEl.textContent = ' • Live update error';
+          return;
+        }
+        tbody.innerHTML = data.rows_html;
+        totalEl.textContent = data.total;
+        statusEl.textContent = ` • Live updated ${new Date().toLocaleTimeString()}`;
+      })
+      .catch(() => {
+        statusEl.textContent = ' • Live update failed';
+      });
+  }
+
+  function scheduleLive() {
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+    if (!liveToggle.checked) {
+      statusEl.textContent = '';
+      return;
+    }
+    const refreshMs = Math.max(1000, parseInt(refreshInput.value || '5000', 10));
+    statusEl.textContent = ` • Live every ${refreshMs}ms`;
+    runLiveFetch();
+    timer = setInterval(runLiveFetch, refreshMs);
+  }
+
+  liveToggle.addEventListener('change', scheduleLive);
+  refreshInput.addEventListener('change', scheduleLive);
+
+  exportBtn.addEventListener('click', function () {
+    const params = currentParams();
+    params.set('export', exportFormat.value);
+    window.location.href = "{% url 'admin:device_logs_export' %}?" + params.toString();
+  });
+
+  if (liveToggle.checked) {
+    scheduleLive();
+  }
+})();
+</script>
+{% endblock %}

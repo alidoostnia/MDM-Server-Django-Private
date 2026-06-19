@@ -1,0 +1,22 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h3 class="card-title mb-0">Log Detail</h3>
+        </div>
+
+        <div class="card-body">
+            <a href="{% url 'admin:device_logs' %}" class="btn btn-secondary btn-sm mb-3">
+                ← Back to list
+            </a>
+
+            <pre class="admin-json-box">{{ pretty_json }}</pre>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

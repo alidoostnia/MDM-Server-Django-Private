@@ -1,0 +1,29 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="alert alert-danger shadow-sm">
+        <h4 class="alert-heading">
+            ⚠️ MongoDB Connection Error
+        </h4>
+
+        <p class="mb-2">
+            We couldn’t connect to the MongoDB logs database right now.
+        </p>
+
+        <p>
+            <strong>Error details:</strong><br>
+            <code class="d-block mt-1">{{ error_message }}</code>
+        </p>
+
+        <hr>
+
+        <p class="mb-0">
+            Please check your <code>MONGO_URI</code> setting or try again later.
+        </p>
+    </div>
+
+</div>
+{% endblock %}

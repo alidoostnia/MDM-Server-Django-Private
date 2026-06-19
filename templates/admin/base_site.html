@@ -1,0 +1,35 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'admin/css/theme.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/custom_components.css' %}">
+    <style>
+        :root {
+            --mdm-primary: {{ ADMIN_THEME_COLORS.primary }};
+            --mdm-primary-hover: {{ ADMIN_THEME_COLORS.primary_hover }};
+            --mdm-primary-soft: {{ ADMIN_THEME_COLORS.primary_soft }};
+            --mdm-secondary: {{ ADMIN_THEME_COLORS.secondary }};
+            --mdm-tertiary: {{ ADMIN_THEME_COLORS.tertiary }};
+            --mdm-accent: {{ ADMIN_THEME_COLORS.accent }};
+            --mdm-background: {{ ADMIN_THEME_COLORS.background }};
+            --mdm-surface: {{ ADMIN_THEME_COLORS.surface }};
+            --mdm-surface-elevated: {{ ADMIN_THEME_COLORS.surface_elevated }};
+            --mdm-surface-variant: {{ ADMIN_THEME_COLORS.surface_variant }};
+            --mdm-primary-container: {{ ADMIN_THEME_COLORS.primary_container }};
+            --mdm-border: {{ ADMIN_THEME_COLORS.border }};
+            --mdm-outline: {{ ADMIN_THEME_COLORS.outline }};
+            --mdm-success: {{ ADMIN_THEME_COLORS.success }};
+            --mdm-warning: {{ ADMIN_THEME_COLORS.warning }};
+            --mdm-danger: {{ ADMIN_THEME_COLORS.danger }};
+            --mdm-info: {{ ADMIN_THEME_COLORS.info }};
+            --mdm-on-primary: {{ ADMIN_THEME_COLORS.on_primary }};
+            --mdm-on-secondary: {{ ADMIN_THEME_COLORS.on_secondary }};
+            --mdm-on-tertiary: {{ ADMIN_THEME_COLORS.on_tertiary }};
+            --mdm-on-background: {{ ADMIN_THEME_COLORS.on_background }};
+            --mdm-on-surface: {{ ADMIN_THEME_COLORS.on_surface }};
+            --mdm-on-muted: {{ ADMIN_THEME_COLORS.on_muted }};
+        }
+    </style>
+{% endblock %}

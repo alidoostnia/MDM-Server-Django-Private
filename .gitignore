@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+*.sqlite3
+.DS_Store
+.env
+my_scripts/
+staticfiles/
+.dockerignore
+my-docker-compose.yml
+emqx/
+temp_uploads/

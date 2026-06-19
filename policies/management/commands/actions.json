@@ -1,0 +1,927 @@
+[
+  {
+    "action_id": "e304b28a-edb1-41ba-af32-791c170c8cda",
+    "name": "Disallow messaging and calling",
+    "description": "Main action: user will not be able to message (SMS/MMS) or call anybody. This action is not deletable.",
+    "input": {
+      "mode": "LOCK_CALLS_AND_SMS"
+    },
+    "action_type": "CallSmsPolicy"
+  },
+  {
+    "action_id": "aaae5f9b-e9fe-4628-9a65-40a50c12c7be",
+    "name": "Allow messaging and calling",
+    "description": "Main action: user will be able to call and message anybody. This action is not deletable.",
+    "input": {
+      "mode": "UNLOCK_CALLS_AND_SMS"
+    },
+    "action_type": "CallSmsPolicy"
+  },
+  {
+    "action_id": "ef8ddfea-8049-4be9-833a-71ca3609facf",
+    "name": "Disallow installing apps",
+    "description": "Main action: user will not be able to install any applications on the device. This action is not deletable.",
+    "input": {
+      "mode": "LOCK_INSTALL_APPS"
+    },
+    "action_type": "InstallPolicy"
+  },
+  {
+    "action_id": "5a2f80de-3b43-4497-bd3c-f3e69e69e778",
+    "name": "Allow installing apps",
+    "description": "Main action: user will be able to install any application. This action is not deletable.",
+    "input": {
+      "mode": "UNLOCK_INSTALL_APPS"
+    },
+    "action_type": "InstallPolicy"
+  },
+  {
+    "action_id": "e46a3154-a493-4b6c-a394-0ca6eaf47fd0",
+    "name": "Lock unknown sources",
+    "description": "Main action: block installing apps from unknown sources (sideload). This action is not deletable.",
+    "input": {
+      "mode": "LOCK_UNKNOWN_SOURCES"
+    },
+    "action_type": "InstallPolicy"
+  },
+  {
+    "action_id": "56270aed-6aa5-4be4-8715-0c59005d18af",
+    "name": "Unlock unknown sources",
+    "description": "Main action: allow installing apps from unknown sources (sideload). This action is not deletable.",
+    "input": {
+      "mode": "UNLOCK_UNKNOWN_SOURCES"
+    },
+    "action_type": "InstallPolicy"
+  },
+  {
+    "action_id": "5cc4865e-243f-4f47-9625-53b78612fd60",
+    "name": "Disallow using camera",
+    "description": "Main action: user will not be able to use the camera of the device. This action is not deletable.",
+    "input": {
+      "allowed": false
+    },
+    "action_type": "CameraPolicy"
+  },
+  {
+    "action_id": "84ef0dd3-01e0-4c55-885c-f494705d914b",
+    "name": "Allow using camera",
+    "description": "Main action: user will be able to use the camera of the device. This action is not deletable.",
+    "input": {
+      "allowed": true
+    },
+    "action_type": "CameraPolicy"
+  },
+  {
+    "action_id": "f87d8e9a-0874-4a75-9470-d01dc6649901",
+    "name": "Block camera apps",
+    "description": "Main action: block common camera app packages using suspend/hide (best-effort). This action is not deletable.",
+    "input": {
+      "mode": "BLOCK"
+    },
+    "action_type": "CameraAppAccess"
+  },
+  {
+    "action_id": "6547420a-7597-40ea-a113-0b24ea8ad668",
+    "name": "Unblock camera apps",
+    "description": "Main action: unblock common camera app packages using suspend/hide (best-effort). This action is not deletable.",
+    "input": {
+      "mode": "UNBLOCK"
+    },
+    "action_type": "CameraAppAccess"
+  },
+  {
+    "action_id": "b1eceda1-e774-4678-97e0-946e9fd859b4",
+    "name": "Block custom camera app packages",
+    "description": "Main action: block provided camera packages (csv). This action is not deletable.",
+    "input": {
+      "mode": "BLOCK",
+      "packages": "com.android.camera,com.google.android.GoogleCamera"
+    },
+    "action_type": "CameraAppAccess"
+  },
+  {
+    "action_id": "d635c883-d8fb-4b27-b3d6-4c21980b7ecb",
+    "name": "Disallow screen capture",
+    "description": "Main action: user will not be able to take screenshots / screen record. This action is not deletable.",
+    "input": {
+      "allowed": false
+    },
+    "action_type": "ScreenCapturePolicy"
+  },
+  {
+    "action_id": "5169d5f7-df33-4897-bba7-a71268471166",
+    "name": "Allow screen capture",
+    "description": "Main action: user will be able to take screenshots / screen record. This action is not deletable.",
+    "input": {
+      "allowed": true
+    },
+    "action_type": "ScreenCapturePolicy"
+  },
+  {
+    "action_id": "f99f80a5-9611-48ab-a2ea-72fc79d94d51",
+    "name": "Disable status bar expand",
+    "description": "Main action: prevent pulling down / expanding status bar (best-effort via reflection). This action is not deletable.",
+    "input": {
+      "allowExpand": false
+    },
+    "action_type": "StatusBarPolicy"
+  },
+  {
+    "action_id": "eaa20f41-a3d6-4deb-987a-be1eafd11b7a",
+    "name": "Allow status bar expand",
+    "description": "Main action: allow pulling down / expanding status bar (best-effort via reflection). This action is not deletable.",
+    "input": {
+      "allowExpand": true
+    },
+    "action_type": "StatusBarPolicy"
+  },
+  {
+    "action_id": "a1f9c346-84db-4811-9a2b-1307dd677d2a",
+    "name": "Turn Wi-Fi off",
+    "description": "Main action: turns Wi-Fi off. This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "WifiState"
+  },
+  {
+    "action_id": "5a698dc9-3163-421e-a748-0faee931efcc",
+    "name": "Turn Wi-Fi on",
+    "description": "Main action: turns Wi-Fi on. This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "WifiState"
+  },
+  {
+    "action_id": "4fbae6eb-5e1f-48a1-bcb3-ceba708cd586",
+    "name": "Disallow changing Wi-Fi",
+    "description": "Main action: user cannot configure/toggle Wi-Fi settings (DO/PO restriction). This action is not deletable.",
+    "input": {
+      "mode": "DISALLOW_BOTH"
+    },
+    "action_type": "WifiPolicy"
+  },
+  {
+    "action_id": "c74c0ac8-659a-4435-a833-9ca9521491ce",
+    "name": "Allow changing Wi-Fi",
+    "description": "Main action: user can configure/toggle Wi-Fi settings (DO/PO restriction). This action is not deletable.",
+    "input": {
+      "mode": "ALLOW_BOTH"
+    },
+    "action_type": "WifiPolicy"
+  },
+  {
+    "action_id": "c2aea29b-ac64-40cb-8bed-6ec9ed320af6",
+    "name": "Keep Wi-Fi on",
+    "description": "Main action: if user turns off Wi-Fi, turn it on again. This action is not deletable.",
+    "input": {
+      "mode": "KEEP_ON"
+    },
+    "action_type": "WifiEnforce"
+  },
+  {
+    "action_id": "75f12ce4-8c2f-494f-b603-75c7605c43f7",
+    "name": "Keep Wi-Fi off",
+    "description": "Main action: if user turns on Wi-Fi, turn it off again. This action is not deletable.",
+    "input": {
+      "mode": "KEEP_OFF"
+    },
+    "action_type": "WifiEnforce"
+  },
+  {
+    "action_id": "dc67a669-15b7-4e31-ab11-16ea0981122d",
+    "name": "Disable Wi-Fi enforce",
+    "description": "Main action: disable Wi-Fi enforcement. This action is not deletable.",
+    "input": {
+      "mode": "NONE"
+    },
+    "action_type": "WifiEnforce"
+  },
+  {
+    "action_id": "017c7bec-df96-440e-b57e-b00e283f6b77",
+    "name": "Turn off the Bluetooth",
+    "description": "Main action: turn off the Bluetooth as fast as possible. This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "BluetoothState"
+  },
+  {
+    "action_id": "d199db0e-8761-4099-8fe4-cb6e176e17c6",
+    "name": "Turn on the Bluetooth",
+    "description": "Main action: turn on the Bluetooth as fast as possible. This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "BluetoothState"
+  },
+  {
+    "action_id": "5bf1093b-001a-4291-847a-c1bf0c382aac",
+    "name": "Keep Bluetooth On",
+    "description": "Main action: if user turns off Bluetooth, turn it on again. This action is not deletable.",
+    "input": {
+      "mode": "KEEP_ON"
+    },
+    "action_type": "BluetoothEnforce"
+  },
+  {
+    "action_id": "a7f74436-7787-44f9-9215-fd63be498026",
+    "name": "Keep Bluetooth Off",
+    "description": "Main action: if user turns on Bluetooth, turn it off again. This action is not deletable.",
+    "input": {
+      "mode": "KEEP_OFF"
+    },
+    "action_type": "BluetoothEnforce"
+  },
+  {
+    "action_id": "53c4fd3b-78b9-4a38-9251-92d056a49ca1",
+    "name": "Disable Keep Bluetooth",
+    "description": "Main action: disable keep Bluetooth on/off enforcement. This action is not deletable.",
+    "input": {
+      "mode": "NONE"
+    },
+    "action_type": "BluetoothEnforce"
+  },
+  {
+    "action_id": "c92efed5-13ee-4b27-9811-5e78c41d029f",
+    "name": "Disallow turning Bluetooth on",
+    "description": "Main action: user will not be able to turn on the Bluetooth (DO/PO restriction). This action is not deletable.",
+    "input": {
+      "allowed": false
+    },
+    "action_type": "BluetoothPolicy"
+  },
+  {
+    "action_id": "d880ab7d-17c2-4f43-9111-0da5721768a7",
+    "name": "Allow turning Bluetooth on/off",
+    "description": "Main action: user will be able to turn Bluetooth on/off (DO/PO restriction). This action is not deletable.",
+    "input": {
+      "allowed": true
+    },
+    "action_type": "BluetoothPolicy"
+  },
+  {
+    "action_id": "a3edf8ed-a4b1-4867-83d1-7c9f435abfbe",
+    "name": "Disallow changing GPS/Location",
+    "description": "Main action: user cannot toggle location settings (DO/PO restriction). This action is not deletable.",
+    "input": {
+      "mode": "DISALLOW_USER_TOGGLE"
+    },
+    "action_type": "GpsPolicy"
+  },
+  {
+    "action_id": "1c01548e-5a60-43d6-ba21-106da4e4e403",
+    "name": "Allow changing GPS/Location",
+    "description": "Main action: user can toggle location settings (DO/PO restriction). This action is not deletable.",
+    "input": {
+      "mode": "ALLOW_USER_TOGGLE"
+    },
+    "action_type": "GpsPolicy"
+  },
+  {
+    "action_id": "c898d75c-8f3f-432b-a6d9-8d0cbae60e87",
+    "name": "Turn GPS/Location on",
+    "description": "Main action: try enabling location services (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "GpsState"
+  },
+  {
+    "action_id": "649a148e-f108-43b5-8c5f-ec75b04f8448",
+    "name": "Turn GPS/Location off",
+    "description": "Main action: try disabling location services (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "GpsState"
+  },
+  {
+    "action_id": "8c617058-f17b-4f5d-902a-2946ab2afb5c",
+    "name": "Keep GPS/Location on",
+    "description": "Main action: if user turns off location, try turning it on again (best-effort). This action is not deletable.",
+    "input": {
+      "mode": "KEEP_ON"
+    },
+    "action_type": "GpsEnforce"
+  },
+  {
+    "action_id": "3d96b653-f27f-4364-9e6d-7c750779354d",
+    "name": "Keep GPS/Location off",
+    "description": "Main action: if user turns on location, try turning it off again (best-effort). This action is not deletable.",
+    "input": {
+      "mode": "KEEP_OFF"
+    },
+    "action_type": "GpsEnforce"
+  },
+  {
+    "action_id": "48e94a17-334e-480f-965a-9818ed32f547",
+    "name": "Disable GPS/Location enforce",
+    "description": "Main action: disable GPS enforcement. This action is not deletable.",
+    "input": {
+      "mode": "NONE"
+    },
+    "action_type": "GpsEnforce"
+  },
+  {
+    "action_id": "e0bfa3b2-2944-4400-a75b-f3145d0091d1",
+    "name": "Enable airplane mode",
+    "description": "Main action: attempt to enable airplane mode (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "AirplaneState"
+  },
+  {
+    "action_id": "14fcfa88-207a-4885-b8bf-97fcac45af2e",
+    "name": "Disable airplane mode",
+    "description": "Main action: attempt to disable airplane mode (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "AirplaneState"
+  },
+  {
+    "action_id": "8b303d03-bf96-4ef9-987d-e0f98f5b5b87",
+    "name": "Enable hotspot",
+    "description": "Main action: attempt to enable Wi-Fi hotspot/tethering (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "HotspotState"
+  },
+  {
+    "action_id": "c7b52714-6e73-4c96-a5df-a32bfed21caf",
+    "name": "Disable hotspot",
+    "description": "Main action: attempt to disable Wi-Fi hotspot/tethering (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "HotspotState"
+  },
+  {
+    "action_id": "8c3de942-88dc-4d4b-8f67-7ac6cfb02295",
+    "name": "Enable cellular data",
+    "description": "Main action: attempt to enable mobile data (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "CellularDataState"
+  },
+  {
+    "action_id": "22fa5f27-7223-4534-ac46-a9b3b8f7efb8",
+    "name": "Disable cellular data",
+    "description": "Main action: attempt to disable mobile data (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "CellularDataState"
+  },
+  {
+    "action_id": "e1dd3179-51a8-4d58-abb8-5fc81976ef96",
+    "name": "Enable data roaming",
+    "description": "Main action: enable data roaming (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "RoamingState"
+  },
+  {
+    "action_id": "945d25ba-70c4-4218-9900-1205e3f8b150",
+    "name": "Disable data roaming",
+    "description": "Main action: disable data roaming (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "RoamingState"
+  },
+  {
+    "action_id": "e71fc65d-5fda-4621-9bd8-102be7019b1e",
+    "name": "Enable NFC",
+    "description": "Main action: attempt to enable NFC (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "NfcState"
+  },
+  {
+    "action_id": "e4b13b11-faf5-4f55-a6d6-347200e72e5b",
+    "name": "Disable NFC",
+    "description": "Main action: attempt to disable NFC (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "NfcState"
+  },
+  {
+    "action_id": "7d73e9d3-4f9e-444b-a316-59b94bf7d63b",
+    "name": "Enable ADB",
+    "description": "Main action: attempt to enable ADB (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "UsbAdbState"
+  },
+  {
+    "action_id": "34e8ee39-e997-424d-a85b-4b1f5d4c9bef",
+    "name": "Disable ADB",
+    "description": "Main action: attempt to disable ADB (best-effort). This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "UsbAdbState"
+  },
+  {
+    "action_id": "9a1b9382-a162-4904-80d5-e411c3c1a734",
+    "name": "Set USB config to mtp,adb",
+    "description": "Main action: set sys.usb.config (best-effort). This action is not deletable.",
+    "input": {
+      "config": "mtp,adb"
+    },
+    "action_type": "UsbConfigState"
+  },
+  {
+    "action_id": "dcc5e0f6-173c-4947-aaac-91e37613e39e",
+    "name": "Set USB config to none",
+    "description": "Main action: set sys.usb.config to none (best-effort). This action is not deletable.",
+    "input": {
+      "config": "none"
+    },
+    "action_type": "UsbConfigState"
+  },
+  {
+    "action_id": "38edaefd-61d8-4a39-8e7e-015860be3c18",
+    "name": "Block web access (browsers)",
+    "description": "Main action: block web usage by suspending/hiding selected packages (DO/PO required). This action is not deletable.",
+    "input": {
+      "mode": "BLOCK_APPS",
+      "packages": "com.android.chrome,org.mozilla.firefox,com.opera.browser"
+    },
+    "action_type": "WebAccessPolicy"
+  },
+  {
+    "action_id": "27bb0858-9d2b-4a2f-a314-a7b0081ba429",
+    "name": "Unblock web access (browsers)",
+    "description": "Main action: unblock web usage by unsuspending/unhiding selected packages (DO/PO required). This action is not deletable.",
+    "input": {
+      "mode": "UNBLOCK_APPS",
+      "packages": "com.android.chrome,org.mozilla.firefox,com.opera.browser"
+    },
+    "action_type": "WebAccessPolicy"
+  },
+  {
+    "action_id": "821bb5ea-b673-4529-ba30-8e41d4f0ff4e",
+    "name": "Disallow sending/receiving SMS/MMS (AppOps best-effort)",
+    "description": "Main action: attempt to block SMS send/receive via AppOps (best-effort). This action is not deletable.",
+    "input": {
+      "allowed": false
+    },
+    "action_type": "SmsMmsPolicy"
+  },
+  {
+    "action_id": "35e931f9-497b-477e-9cd6-4dcc42b76d97",
+    "name": "Allow sending/receiving SMS/MMS (AppOps best-effort)",
+    "description": "Main action: attempt to allow SMS send/receive via AppOps (best-effort). This action is not deletable.",
+    "input": {
+      "allowed": true
+    },
+    "action_type": "SmsMmsPolicy"
+  },
+  {
+    "action_id": "03230ccf-e625-443b-aada-49a4a399660f",
+    "name": "Turn speakerphone on",
+    "description": "Main action: enable speakerphone. This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "SpeakerphoneState"
+  },
+  {
+    "action_id": "f698404b-0dac-4945-b69c-12e97e4f5984",
+    "name": "Turn speakerphone off",
+    "description": "Main action: disable speakerphone. This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "SpeakerphoneState"
+  },
+  {
+    "action_id": "fa186374-6a3d-4148-9ad5-df165b1e5457",
+    "name": "Set audio profile: Normal",
+    "description": "Main action: set ringer mode to NORMAL. This action is not deletable.",
+    "input": {
+      "audioType": "NORMAL"
+    },
+    "action_type": "AudioProfile"
+  },
+  {
+    "action_id": "58b5e975-bae1-451d-af80-5c4c15b730a8",
+    "name": "Set audio profile: Vibrate",
+    "description": "Main action: set ringer mode to VIBRATE. This action is not deletable.",
+    "input": {
+      "audioType": "VIBRATE"
+    },
+    "action_type": "AudioProfile"
+  },
+  {
+    "action_id": "c47fffc0-e90e-4964-a7cf-f38d67b5fc5f",
+    "name": "Set audio profile: Silent",
+    "description": "Main action: set ringer mode to SILENT. This action is not deletable.",
+    "input": {
+      "audioType": "SILENT"
+    },
+    "action_type": "AudioProfile"
+  },
+  {
+    "action_id": "90d5ddeb-0ff0-49a6-9fe0-cfd9766866b7",
+    "name": "Create notification (text only)",
+    "description": "Main action: show a high-priority notification with title and body. This action is not deletable.",
+    "input": {
+      "title": "MDM Notice",
+      "body": "This is a sample notification without image."
+    },
+    "action_type": "MakeNotification"
+  },
+  {
+    "action_id": "be1d321b-50b1-4548-8f01-1d9b3733413b",
+    "name": "Create notification (with image + tag)",
+    "description": "Main action: show a high-priority notification with big picture style. This action is not deletable.",
+    "input": {
+      "title": "MDM Notice",
+      "body": "This is a sample notification with image.",
+      "imageUrl": "https://example.com/sample.jpg",
+      "tag": "sample_notice"
+    },
+    "action_type": "MakeNotification"
+  },
+  {
+    "action_id": "4e6ea0ff-664a-4784-a75d-27e2836c3855",
+    "name": "Install APK from URL",
+    "description": "Main action: download an APK and install it using pm (best-effort). This action is not deletable.",
+    "input": {
+      "url": "https://example.com/app.apk"
+    },
+    "action_type": "InstallApk"
+  },
+  {
+    "action_id": "d7de574c-6700-4cbb-8e70-7686327eec9f",
+    "name": "Remove APK by package id",
+    "description": "Main action: uninstall an app by its package name (best-effort). This action is not deletable.",
+    "input": {
+      "packageId": "com.example.app"
+    },
+    "action_type": "RemoveApk"
+  },
+  {
+    "action_id": "05a4e1f4-8dca-4ba3-857d-6924c0f60af9",
+    "name": "Deploy file to path",
+    "description": "Main action: download file from URL and save to device path. This action is not deletable.",
+    "input": {
+      "url": "https://example.com/file.bin",
+      "path": "/sdcard/Download/file.bin"
+    },
+    "action_type": "DeployFile"
+  },
+  {
+    "action_id": "38d7d07e-5fb2-476f-803a-78050d7fc346",
+    "name": "Remove file by path",
+    "description": "Main action: delete a single file at path. This action is not deletable.",
+    "input": {
+      "path": "/sdcard/Download/file.bin"
+    },
+    "action_type": "RemoveFile"
+  },
+  {
+    "action_id": "d286a2bc-b03a-424e-ad2e-30a12e62030b",
+    "name": "Copy file",
+    "description": "Main action: copy a file from source to destination. This action is not deletable.",
+    "input": {
+      "from": "/sdcard/Download/a.txt",
+      "to": "/sdcard/Download/b.txt"
+    },
+    "action_type": "CopyFile"
+  },
+  {
+    "action_id": "4f6ad24b-5840-41e6-847d-9bfe303b3592",
+    "name": "Cut (move) file",
+    "description": "Main action: move a file from source to destination. This action is not deletable.",
+    "input": {
+      "from": "/sdcard/Download/a.txt",
+      "to": "/sdcard/Documents/a.txt"
+    },
+    "action_type": "CutFile"
+  },
+  {
+    "action_id": "31555f0d-bac6-4d98-94fa-01a93e99b474",
+    "name": "Delete file/folder recursively",
+    "description": "Main action: delete a file or directory recursively. This action is not deletable.",
+    "input": {
+      "from": "/sdcard/Download/old_folder"
+    },
+    "action_type": "DeleteFile"
+  },
+  {
+    "action_id": "bf6ccc30-7272-4c77-84e7-2c2af0046d0d",
+    "name": "Ping device",
+    "description": "Main action: check device connectivity; returns PONG timestamp. This action is not deletable.",
+    "input": {},
+    "action_type": "Ping"
+  },
+  {
+    "action_id": "ce8d2933-9719-4990-b769-31d32d85c006",
+    "name": "Lock screen now",
+    "description": "Main action: immediately locks the device screen (Device Admin required). This action is not deletable.",
+    "input": {},
+    "action_type": "ScreenLock"
+  },
+  {
+    "action_id": "48b26faa-b170-4c09-a32b-8a958c0cc1dd",
+    "name": "Wipe device",
+    "description": "Main action: factory reset (Device Admin required). This action is not deletable.",
+    "input": {},
+    "action_type": "Wipe"
+  },
+  {
+    "action_id": "e312acb6-785f-4994-9ddb-35281e0cb631",
+    "name": "Get last known location",
+    "description": "Main action: report last known GPS location (permission required). This action is not deletable.",
+    "input": {},
+    "action_type": "GeoLocate"
+  },
+  {
+    "action_id": "95e05318-492a-47e8-aea8-5bfb7b439990",
+    "name": "Inventory report",
+    "description": "Main action: report device info and installed packages count. This action is not deletable.",
+    "input": {},
+    "action_type": "Inventory"
+  },
+  {
+    "action_id": "4b63785c-0b0a-44ab-a88f-a232045ec579",
+    "name": "Full lock (kiosk-like best-effort)",
+    "description": "Main action: tries to disable keyguard features, camera, screen capture, and locks device (best-effort). This action is not deletable.",
+    "input": {},
+    "action_type": "FullLock"
+  },
+  {
+    "action_id": "84765195-c59a-491d-bc45-3fb5cf63b184",
+    "name": "Enable actions execution",
+    "description": "Main action: enable client-side action execution (except restrictions where noted). This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "ActionTypeEnabled"
+  },
+  {
+    "action_id": "7c106fa2-b2aa-40f6-9951-05e9d58b34e1",
+    "name": "Disable actions execution",
+    "description": "Main action: disable client-side action execution (Ping and ActionTypeEnabled still work). This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "ActionTypeEnabled"
+  },
+  {
+    "action_id": "44136584-3c3a-4142-943c-50415d0eff98",
+    "name": "Reset Wi-Fi enforcement",
+    "description": "Main action: reset Wi-Fi enforcement mode to NONE. This action is not deletable.",
+    "input": {
+      "actionType": "WIFI_ENFORCE"
+    },
+    "action_type": "ResetActionType"
+  },
+  {
+    "action_id": "e25b2212-4859-4bb6-88cb-636223699c08",
+    "name": "Reset Bluetooth enforcement",
+    "description": "Main action: reset Bluetooth enforcement mode to NONE. This action is not deletable.",
+    "input": {
+      "actionType": "BT_ENFORCE"
+    },
+    "action_type": "ResetActionType"
+  },
+  {
+    "action_id": "c7a1c818-2846-42d7-95c1-dad0c76cb94b",
+    "name": "Reset GPS enforcement",
+    "description": "Main action: reset GPS enforcement mode to NONE. This action is not deletable.",
+    "input": {
+      "actionType": "GPS_ENFORCE"
+    },
+    "action_type": "ResetActionType"
+  },
+  {
+    "action_id": "d284e318-9517-49db-84e1-c17761eafc98",
+    "name": "Reset Wi-Fi policy restriction",
+    "description": "Main action: clear DISALLOW_CONFIG_WIFI restriction (DO/PO required). This action is not deletable.",
+    "input": {
+      "actionType": "WIFI_POLICY"
+    },
+    "action_type": "ResetActionType"
+  },
+  {
+    "action_id": "fb9baa0d-ad52-4275-aef3-3408d5effae7",
+    "name": "Reset Bluetooth policy restriction",
+    "description": "Main action: clear DISALLOW_BLUETOOTH restriction (DO/PO required). This action is not deletable.",
+    "input": {
+      "actionType": "BLUETOOTH_POLICY"
+    },
+    "action_type": "ResetActionType"
+  },
+  {
+    "action_id": "e10fbb1e-75d2-4fb2-b099-3aabbd10a854",
+    "name": "Reset GPS policy restriction",
+    "description": "Main action: clear DISALLOW_CONFIG_LOCATION restriction (DO/PO required). This action is not deletable.",
+    "input": {
+      "actionType": "GPS_POLICY"
+    },
+    "action_type": "ResetActionType"
+  },
+  {
+    "action_id": "ea7c0a42-a8f3-4501-bbe9-34830f5b1f17",
+    "name": "Reset camera policy",
+    "description": "Main action: re-enable camera via policy (Device Admin required). This action is not deletable.",
+    "input": {
+      "actionType": "CAMERA_POLICY"
+    },
+    "action_type": "ResetActionType"
+  },
+  {
+    "action_id": "2722f794-538e-42b1-b2fb-80570ea8127b",
+    "name": "Reset screen capture policy",
+    "description": "Main action: allow screenshots via policy (Device Admin required). This action is not deletable.",
+    "input": {
+      "actionType": "SCREENCAPTURE_POLICY"
+    },
+    "action_type": "ResetActionType"
+  },
+  {
+    "action_id": "32b8e0b3-d723-4d7c-a24d-884403a5a0f1",
+    "name": "Reset status bar policy",
+    "description": "Main action: allow status bar expand via reflection (best-effort). This action is not deletable.",
+    "input": {
+      "actionType": "STATUSBAR_POLICY"
+    },
+    "action_type": "ResetActionType"
+  },
+  {
+    "action_id": "0c376a9c-c3ae-4317-9e60-949109a7b42b",
+    "name": "Internal storage enabled (allow USB transfer/media)",
+    "description": "Main action: clear USB file transfer + mount physical media restrictions (DO/PO required). This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "InternalStorageActionType"
+  },
+  {
+    "action_id": "3944e02e-7724-41a0-95c4-552a7ffd7196",
+    "name": "Internal storage disabled (block USB transfer/media)",
+    "description": "Main action: apply USB file transfer + mount physical media restrictions (DO/PO required). This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "InternalStorageActionType"
+  },
+  {
+    "action_id": "6a41ba5c-a472-4cb2-ac22-e5b28a41ae41",
+    "name": "Enable TLS mode",
+    "description": "Main action: set internal flag use_tls=true (client should read ConfigStore.useTls()). This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "UseTLS"
+  },
+  {
+    "action_id": "8bfecd32-5d7a-4f43-9a33-5b5788218410",
+    "name": "Disable TLS mode",
+    "description": "Main action: set internal flag use_tls=false (client should read ConfigStore.useTls()). This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "UseTLS"
+  },
+  {
+    "action_id": "35b23f90-c710-4661-b87f-c9549edfa6b1",
+    "name": "Allow deploy actions",
+    "description": "Main action: set internal flag allow_deploy=true (optional gate for deploy actions). This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "DeployApplication"
+  },
+  {
+    "action_id": "e0f621a3-2a25-4d8e-81ec-2f4c70f0ed26",
+    "name": "Disallow deploy actions",
+    "description": "Main action: set internal flag allow_deploy=false (optional gate for deploy actions). This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "DeployApplication"
+  },
+  {
+    "action_id": "f20af70d-48e6-414d-ac64-d110fc01af89",
+    "name": "Create VPN profiles (placeholder enabled)",
+    "description": "Main action: placeholder; logs warning because no profile payload exists. This action is not deletable.",
+    "input": {
+      "enabled": true
+    },
+    "action_type": "CreateVPNProfiles"
+  },
+  {
+    "action_id": "9b45045e-d6f3-450b-8dec-82f157fa4baa",
+    "name": "Create VPN profiles (disabled)",
+    "description": "Main action: placeholder disabled (no-op). This action is not deletable.",
+    "input": {
+      "enabled": false
+    },
+    "action_type": "CreateVPNProfiles"
+  },
+  {
+    "action_id": "0fed0b0f-9a04-4a73-adc2-9307ca3a5c14",
+    "name": "Set password quality: Numeric",
+    "description": "Main action: enforce numeric-only password quality (Device Admin required). This action is not deletable.",
+    "input": {
+      "kind": "NUMERIC"
+    },
+    "action_type": "ActionTypeQuality"
+  },
+  {
+    "action_id": "76fe675a-2c60-4416-bfa5-4e56a6662034",
+    "name": "Set password quality: Complex",
+    "description": "Main action: enforce complex password quality (Device Admin required). This action is not deletable.",
+    "input": {
+      "kind": "COMPLEX"
+    },
+    "action_type": "ActionTypeQuality"
+  },
+  {
+    "action_id": "b5a4f383-2a72-46ae-9811-81451bb8cb26",
+    "name": "Set minimum password length",
+    "description": "Main action: enforce minimum password length (Device Admin required). This action is not deletable.",
+    "input": {
+      "length": 8
+    },
+    "action_type": "MinimumActionTypeLength"
+  },
+  {
+    "action_id": "ba5412ca-ca44-4d75-b9c2-437e6e19e9a1",
+    "name": "Set minimum uppercase letters",
+    "description": "Main action: enforce minimum uppercase letters (Device Admin required; reflection). This action is not deletable.",
+    "input": {
+      "length": 1
+    },
+    "action_type": "MinimumUppercaseLetters"
+  },
+  {
+    "action_id": "9262f20b-eda7-44e3-9cc6-80cb6e691efc",
+    "name": "Set minimum lowercase letters",
+    "description": "Main action: enforce minimum lowercase letters (Device Admin required; reflection). This action is not deletable.",
+    "input": {
+      "length": 1
+    },
+    "action_type": "MinimumLowercaseLetters"
+  },
+  {
+    "action_id": "1ae56d8e-973e-4eea-9e7f-b12839294015",
+    "name": "Set minimum numeric digits",
+    "description": "Main action: enforce minimum numeric digits (Device Admin required; reflection). This action is not deletable.",
+    "input": {
+      "length": 1
+    },
+    "action_type": "MinimumNumericalDigits"
+  },
+  {
+    "action_id": "88fceb5e-e341-4ad7-8b83-f8e29c48bffc",
+    "name": "Set minimum non-letter characters",
+    "description": "Main action: enforce minimum non-letter characters (Device Admin required; reflection). This action is not deletable.",
+    "input": {
+      "length": 1
+    },
+    "action_type": "MinimumNonLetterCharacters"
+  },
+  {
+    "action_id": "dd5e3682-d824-46d9-8080-d7316cdf9831",
+    "name": "Set minimum symbols",
+    "description": "Main action: enforce minimum symbols (Device Admin required; reflection). This action is not deletable.",
+    "input": {
+      "length": 1
+    },
+    "action_type": "MinimumSymbols"
+  },
+  {
+    "action_id": "7e49e875-0c85-4417-912c-1e2ad7acbb6d",
+    "name": "Set maximum time to lock",
+    "description": "Main action: set maximum idle time before lock (Device Admin required). This action is not deletable.",
+    "input": {
+      "timeInSec": 60
+    },
+    "action_type": "MaximumTimeToLock"
+  },
+  {
+    "action_id": "288b063d-1bd8-4715-a2d9-ebcd9a261aad",
+    "name": "Set maximum failed attempts for wipe",
+    "description": "Main action: wipe after N failed password attempts (Device Admin required). This action is not deletable.",
+    "input": {
+      "num": 10
+    },
+    "action_type": "MaximumFailedAttemptsForWipe"
+  }
+]

@@ -1,0 +1,513 @@
+:root {
+    --mdm-primary: #4caf50;
+    --mdm-primary-hover: #43a047;
+    --mdm-primary-soft: #2e5a43;
+    --mdm-secondary: #66bb6a;
+    --mdm-tertiary: #81c784;
+    --mdm-accent: #5ed3b3;
+    --mdm-background: #0b1510;
+    --mdm-surface: #12261c;
+    --mdm-surface-elevated: #163126;
+    --mdm-surface-variant: #1a3327;
+    --mdm-primary-container: #1e3d2e;
+    --mdm-border: #29503e;
+    --mdm-outline: #36664f;
+
+    --mdm-success: #7fda87;
+    --mdm-warning: #f6c668;
+    --mdm-danger: #f27777;
+    --mdm-info: #64c2ff;
+
+    --mdm-on-primary: #07120b;
+    --mdm-on-secondary: #07120b;
+    --mdm-on-tertiary: #07120b;
+    --mdm-on-background: #effaf3;
+    --mdm-on-surface: #e4f5eb;
+    --mdm-on-muted: #a7c5b2;
+
+    --mdm-shadow: 0 10px 25px rgba(0, 0, 0, 0.22);
+}
+
+.login-logo img {
+    width: 210px !important;
+    height: 210px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 4px solid var(--mdm-primary);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    transition: 0.3s ease;
+}
+
+.login-logo img:hover {
+    transform: scale(1.05);
+}
+
+body,
+.content-wrapper,
+.main-sidebar,
+.main-header,
+.modal-content,
+.wrapper {
+    background-color: var(--mdm-background) !important;
+    color: var(--mdm-on-background) !important;
+}
+
+.main-sidebar,
+.card,
+.dropdown-menu,
+.nav-tabs,
+.select2-container--default .select2-selection--single,
+.select2-dropdown,
+.module,
+.breadcrumb,
+.table,
+.list-group-item,
+.small-box,
+.info-box,
+.alert,
+.callout,
+pre,
+code,
+.main-footer {
+    background-color: var(--mdm-surface) !important;
+    color: var(--mdm-on-surface) !important;
+    border-color: var(--mdm-border) !important;
+}
+
+.card,
+.info-box,
+.small-box,
+.select2-dropdown,
+.dropdown-menu,
+.modal-content,
+.main-footer,
+.content-wrapper {
+    box-shadow: var(--mdm-shadow);
+}
+
+.card-header,
+.card-footer,
+thead,
+tfoot,
+.main-header,
+.content-header,
+.navbar,
+.breadcrumb,
+.modal-header,
+.modal-footer,
+.nav-tabs,
+.page-item.disabled .page-link {
+    background-color: var(--mdm-primary-container) !important;
+    color: var(--mdm-on-surface) !important;
+    border-color: var(--mdm-border) !important;
+}
+
+a,
+.page-link,
+.brand-link,
+.nav-sidebar .nav-link,
+.select2-container--default .select2-selection--single .select2-selection__rendered,
+.form-control,
+.custom-select,
+.navbar-nav .nav-link,
+.table,
+.btn-link {
+    color: var(--mdm-on-surface) !important;
+}
+
+
+a:hover,
+a:focus,
+.nav-sidebar .nav-link:hover,
+.nav-sidebar .nav-link.active,
+.navbar-nav .nav-link:hover,
+.page-link:hover,
+.btn-link:hover {
+    color: var(--mdm-accent) !important;
+}
+
+.brand-link,
+.main-sidebar .user-panel,
+.sidebar {
+    background-color: var(--mdm-surface-elevated) !important;
+    border-bottom: 1px solid var(--mdm-border) !important;
+}
+
+.nav-sidebar .nav-item > .nav-link.active,
+.page-item.active .page-link,
+.btn-primary,
+input[type="submit"],
+.submit-row input,
+.button,
+.object-tools a,
+.badge-primary {
+    background-color: var(--mdm-primary) !important;
+    border-color: var(--mdm-primary) !important;
+    color: var(--mdm-on-primary) !important;
+}
+
+
+.btn-primary:hover,
+.object-tools a:hover,
+.submit-row input:hover,
+.page-item.active .page-link:hover {
+    background-color: var(--mdm-primary-hover) !important;
+    border-color: var(--mdm-primary-hover) !important;
+}
+
+.btn-secondary,
+.badge-secondary,
+.btn-info,
+.badge-info,
+.callout.callout-info {
+    background-color: var(--mdm-secondary) !important;
+    border-color: var(--mdm-secondary) !important;
+    color: var(--mdm-on-secondary) !important;
+}
+
+.badge-success,
+.btn-success,
+.callout.callout-success,
+.alert-success {
+    background-color: var(--mdm-success) !important;
+    border-color: var(--mdm-success) !important;
+    color: #10311d !important;
+}
+
+
+.btn-warning,
+.badge-warning,
+.alert-warning,
+.callout.callout-warning {
+    background-color: var(--mdm-warning) !important;
+    border-color: var(--mdm-warning) !important;
+    color: #2a1b00 !important;
+}
+
+.btn-danger,
+.badge-danger,
+.alert-danger,
+.callout.callout-danger,
+.errornote {
+    background-color: var(--mdm-danger) !important;
+    border-color: var(--mdm-danger) !important;
+    color: #2d0606 !important;
+}
+
+.form-control,
+.custom-select,
+.select2-container--default .select2-selection--single,
+textarea,
+input,
+select,
+.select2-search__field {
+    background-color: var(--mdm-surface-variant) !important;
+    border-color: var(--mdm-outline) !important;
+    color: var(--mdm-on-surface) !important;
+}
+
+
+.form-control:focus,
+.custom-select:focus,
+.select2-container--default.select2-container--focus .select2-selection--single,
+textarea:focus,
+input:focus,
+select:focus {
+    border-color: var(--mdm-primary) !important;
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--mdm-primary) 25%, transparent) !important;
+}
+
+::placeholder,
+.form-control::placeholder {
+    color: var(--mdm-on-muted) !important;
+    opacity: 1;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: color-mix(in srgb, var(--mdm-primary-soft) 55%, var(--mdm-surface));
+}
+
+.table-hover tbody tr:hover,
+tr:hover {
+    background-color: color-mix(in srgb, var(--mdm-accent) 24%, var(--mdm-surface-elevated)) !important;
+}
+
+.table th,
+.table td,
+.table thead th,
+.table-bordered,
+.table-bordered th,
+.table-bordered td,
+hr {
+    border-color: var(--mdm-border) !important;
+}
+
+.dropdown-item,
+.select2-results__option,
+.nav-tabs .nav-link,
+.list-group-item,
+.pagination .page-link,
+.breadcrumb-item,
+.alert,
+.callout,
+.text-muted,
+small {
+    color: var(--mdm-on-surface) !important;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus,
+.select2-results__option--highlighted,
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link,
+.list-group-item:hover,
+.pagination .page-link:hover {
+    background-color: var(--mdm-primary-soft) !important;
+    color: var(--mdm-on-surface) !important;
+}
+
+
+.alert-info {
+    background-color: color-mix(in srgb, var(--mdm-info) 22%, var(--mdm-surface)) !important;
+    border-color: var(--mdm-info) !important;
+    color: var(--mdm-on-surface) !important;
+}
+
+
+.alert-info {
+    background-color: color-mix(in srgb, var(--mdm-info) 22%, var(--mdm-surface)) !important;
+    border-color: var(--mdm-info) !important;
+    color: var(--mdm-on-surface) !important;
+}
+
+.main-sidebar .brand-text,
+.user-panel .info,
+.nav-header,
+.breadcrumb-item + .breadcrumb-item::before,
+.select2-selection__placeholder,
+.help,
+.help-block,
+.form-text,
+.empty,
+.quiet {
+    color: var(--mdm-on-muted) !important;
+}
+
+progress,
+.progress-bar,
+.timeline > div > .timeline-item,
+.timeline > div > .timeline-item > .timeline-header,
+.timeline > .time-label > span {
+    background-color: var(--mdm-surface-variant) !important;
+    border-color: var(--mdm-border) !important;
+    color: var(--mdm-on-surface) !important;
+}
+
+.login-page,
+.register-page,
+.login-box,
+.register-box,
+.login-card-body,
+.register-card-body {
+    background-color: var(--mdm-background) !important;
+    color: var(--mdm-on-surface) !important;
+}
+
+/* Inline add-row button consistency */
+.inline-group .add-row a,
+.inline-group .tabular tr.add-row td a,
+tr.add-row td a,
+p.addlink a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.65rem;
+    border-radius: 8px;
+    background-color: color-mix(in srgb, var(--mdm-primary) 18%, var(--mdm-surface)) !important;
+    border: 1px solid var(--mdm-primary) !important;
+    color: var(--mdm-on-surface) !important;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.inline-group .add-row a:hover,
+.inline-group .tabular tr.add-row td a:hover,
+tr.add-row td a:hover,
+p.addlink a:hover {
+    background-color: color-mix(in srgb, var(--mdm-primary) 30%, var(--mdm-surface)) !important;
+    color: var(--mdm-on-surface) !important;
+}
+
+/* Django filtered select (two-pane chooser) */
+.selector {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: stretch;
+    float: none !important;
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+    background: var(--mdm-surface) !important;
+    border: 1px solid var(--mdm-border) !important;
+    border-radius: 12px;
+    padding: 0.8rem;
+}
+
+.selector::after {
+    content: none !important;
+}
+
+.selector h2 {
+    background: transparent !important;
+    color: var(--mdm-on-surface) !important;
+    border: 0 !important;
+    margin-bottom: 0.4rem;
+}
+
+.selector .selector-available,
+.selector .selector-chosen {
+    float: none !important;
+    width: 100% !important;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: 1px solid var(--mdm-border) !important;
+    border-radius: 10px;
+    background: var(--mdm-surface-elevated) !important;
+}
+
+.selector .selector-filter {
+    display: block;
+    border-bottom: 1px solid var(--mdm-border) !important;
+    background: var(--mdm-primary-container) !important;
+    padding: 0.45rem;
+}
+
+.selector .selector-filter label {
+    width: 100%;
+    margin: 0;
+}
+
+.selector .selector-filter input {
+    width: 100%;
+    border-radius: 8px;
+    background: var(--mdm-surface-variant) !important;
+    border: 1px solid var(--mdm-outline) !important;
+    color: var(--mdm-on-surface) !important;
+}
+
+select.filtered {
+    width: 100% !important;
+    min-height: 20rem;
+    font-family: inherit !important;
+    font-size: 0.98rem;
+    line-height: 1.45;
+    background: var(--mdm-surface-elevated) !important;
+    border-color: var(--mdm-border) !important;
+    color: var(--mdm-on-surface) !important;
+}
+
+.selector select option {
+    background: var(--mdm-surface-elevated);
+    color: var(--mdm-on-surface);
+}
+
+.selector ul.selector-chooser li a {
+    border-radius: 999px;
+    border: 1px solid var(--mdm-outline) !important;
+    background-color: var(--mdm-primary-container) !important;
+}
+
+.selector ul.selector-chooser li a:hover {
+    background-color: color-mix(in srgb, var(--mdm-primary) 25%, var(--mdm-surface)) !important;
+}
+
+.selector ul.selector-chooser {
+    float: none !important;
+    width: auto !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.55rem;
+    margin: 0 0.45rem !important;
+    padding: 0;
+    align-self: center;
+}
+
+.selector ul.selector-chooser li {
+    margin: 0 !important;
+}
+
+.selector ul.selector-chooser li a {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    border: 1px solid var(--mdm-outline) !important;
+    background-image: none !important;
+    background-color: var(--mdm-primary-container) !important;
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--mdm-primary) 30%, transparent);
+}
+
+.selector ul.selector-chooser li a.selector-add::before {
+    content: "\203a";
+    color: var(--mdm-on-surface);
+    font-size: 1.35rem;
+    line-height: 1;
+    font-weight: 800;
+}
+
+.selector ul.selector-chooser li a.selector-remove::before {
+    content: "\2039";
+    color: var(--mdm-on-surface);
+    font-size: 1.35rem;
+    line-height: 1;
+    font-weight: 800;
+}
+
+.selector .selector-available input[type="button"],
+.selector .selector-chosen input[type="button"] {
+    border-radius: 8px;
+    border: 1px solid var(--mdm-outline) !important;
+    background: var(--mdm-primary-container) !important;
+    color: var(--mdm-on-surface) !important;
+    padding: 0.4rem 0.6rem;
+    font-weight: 600;
+}
+
+.selector .selector-available input[type="button"]:hover,
+.selector .selector-chosen input[type="button"]:hover {
+    background: color-mix(in srgb, var(--mdm-primary) 25%, var(--mdm-surface)) !important;
+}
+
+.selector a.selector-chooseall,
+.selector a.selector-clearall {
+    align-self: center;
+    margin: 0.65rem auto 0.8rem !important;
+    border-radius: 8px;
+    border: 1px solid var(--mdm-outline) !important;
+    background: var(--mdm-primary-container) !important;
+    color: var(--mdm-on-surface) !important;
+    padding: 0.42rem 0.7rem;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.selector a.selector-chooseall:hover,
+.selector a.selector-clearall:hover {
+    background: color-mix(in srgb, var(--mdm-primary) 25%, var(--mdm-surface)) !important;
+}
+
+@media (max-width: 1360px) {
+    .selector {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .selector ul.selector-chooser {
+        flex-direction: row;
+        justify-content: center;
+        margin: 0.2rem 0 !important;
+    }
+}

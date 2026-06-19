@@ -1,0 +1,279 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: mdm_postgres
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - mdm_postgres_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - mdm_local
+
+  mongodb:
+    image: mongo:6
+    container_name: mdm_mongodb
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+    volumes:
+      - mdm_mongo_data:/data/db
+    ports:
+      - "127.0.0.1:27017:27017"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--quiet",
+          "-u",
+          "${MONGO_INITDB_ROOT_USERNAME}",
+          "-p",
+          "${MONGO_INITDB_ROOT_PASSWORD}",
+          "--authenticationDatabase",
+          "admin",
+          "--eval",
+          "db.adminCommand('ping').ok"
+        ]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 20s
+    networks:
+      - mdm_local
+
+  redis:
+    image: redis:7
+    container_name: mdm_redis
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD}
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "redis-cli -a '${REDIS_PASSWORD}' ping | grep PONG"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - mdm_local
+
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    container_name: mdm_minio
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    volumes:
+      - mdm_minio_data:/data
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9000/minio/health/live"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - mdm_local
+
+  mqtt:
+    image: emqx/emqx:5.10.0
+    container_name: mdm_mqtt
+    hostname: mqtt
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    environment:
+      EMQX_NAME: mdm_mqtt
+      EMQX_NODE__NAME: emqx@mqtt
+      EMQX_NODE__COOKIE: ${EMQX_NODE_COOKIE}
+
+      EMQX_DASHBOARD__DEFAULT_USERNAME: ${EMQX_DASHBOARD_USERNAME}
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: ${EMQX_DASHBOARD_PASSWORD}
+
+      EMQX_AUTHENTICATION__1__ENABLE: "true"
+      EMQX_AUTHENTICATION__1__MECHANISM: password_based
+      EMQX_AUTHENTICATION__1__BACKEND: built_in_database
+      EMQX_AUTHENTICATION__1__USER_ID_TYPE: username
+    volumes:
+      - mdm_emqx_data:/opt/emqx/data
+    ports:
+      - "127.0.0.1:1883:1883"
+      - "127.0.0.1:18083:18083"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:18083/status"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 20s
+    networks:
+      - mdm_local
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mdm_django
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    environment:
+      DJANGO_SETTINGS_MODULE: config.production
+      DJANGO_ENV_FILE: .env.local
+      POSTGRES_HOST: postgres
+      MQTT_HOST: mqtt
+      MINIO_ENDPOINT: http://minio:9000
+      MONGO_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/${MONGO_DB}?authSource=admin
+      CELERY_BROKER_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      CELERY_RESULT_BACKEND: redis://:${REDIS_PASSWORD}@redis:6379/1
+    command:
+      - /bin/sh
+      - -c
+      - |
+        mkdir -p /var/log/django
+        python manage.py migrate
+        python manage.py collectstatic --noinput
+        python manage.py seed_data
+        python manage.py create_admin
+        exec gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2 --timeout 120
+    volumes:
+      - mdm_django_logs:/var/log/django
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      mqtt:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "python manage.py check"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - mdm_local
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mdm_celery
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    environment:
+      DJANGO_SETTINGS_MODULE: config.production
+      DJANGO_ENV_FILE: .env.local
+      POSTGRES_HOST: postgres
+      MQTT_HOST: mqtt
+      MINIO_ENDPOINT: http://minio:9000
+      MONGO_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/${MONGO_DB}?authSource=admin
+      CELERY_BROKER_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      CELERY_RESULT_BACKEND: redis://:${REDIS_PASSWORD}@redis:6379/1
+    command: celery -A config worker --loglevel=info --concurrency=2
+    volumes:
+      - mdm_django_logs:/var/log/django
+    depends_on:
+      django:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    networks:
+      - mdm_local
+
+  mqtt_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mdm_mqtt_worker
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    environment:
+      DJANGO_SETTINGS_MODULE: config.production
+      DJANGO_ENV_FILE: .env.local
+      POSTGRES_HOST: postgres
+      MQTT_HOST: mqtt
+      MINIO_ENDPOINT: http://minio:9000
+      MONGO_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/${MONGO_DB}?authSource=admin
+      CELERY_BROKER_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      CELERY_RESULT_BACKEND: redis://:${REDIS_PASSWORD}@redis:6379/1
+    command: python manage.py mqtt_worker
+    volumes:
+      - mdm_django_logs:/var/log/django
+    depends_on:
+      django:
+        condition: service_healthy
+      mqtt:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - mdm_local
+
+networks:
+  mdm_local:
+    driver: bridge
+
+volumes:
+  mdm_postgres_data:
+  mdm_mongo_data:
+  mdm_minio_data:
+  mdm_emqx_data:
+  mdm_django_logs:

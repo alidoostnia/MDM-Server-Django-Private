@@ -1,0 +1,19 @@
+{% for doc in docs %}
+  <tr class="logs-row">
+    <td class="logs-nowrap">{{ doc.pretty_time }}</td>
+    <td>
+      <div><strong>{{ doc.device_name }}</strong></div>
+      <div class="logs-cell-meta">{{ doc.deviceId }}</div>
+    </td>
+    <td>
+      <div><strong>{{ doc.policy_name }}</strong></div>
+      <div class="logs-cell-meta">{{ doc.policyId }}</div>
+    </td>
+    <td>{{ doc.moduleName|default:"—" }}</td>
+    <td class="logs-ellipsis">{{ doc.logStash|default:"" }}</td>
+    <td class="logs-ellipsis">{{ doc.actionStash|default:"" }}</td>
+    <td><a class="button logs-link-button" href="{% url 'admin:device_logs_detail' doc.id_str %}">Details</a></td>
+  </tr>
+{% empty %}
+  <tr><td colspan="7" class="logs-empty">No logs found for current filters.</td></tr>
+{% endfor %}
