@@ -115,6 +115,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     'rest_framework_simplejwt.token_blacklist',
     'drf_yasg',
+    "captcha",
     
     # Local apps
     "devices",
@@ -130,6 +131,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "config.middleware.AdminLoginCaptchaMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -226,6 +228,14 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = "devices.Account"
+
+# Local CAPTCHA used only by the Django admin login.
+CAPTCHA_LENGTH = 5
+CAPTCHA_TIMEOUT = 5
+CAPTCHA_NOISE_FUNCTIONS = (
+    "captcha.helpers.noise_arcs",
+    "captcha.helpers.noise_dots",
+)
 
 ADMIN_THEME_COLORS = {
     "primary": env("ADMIN_THEME_PRIMARY", default="#2F9A57"),

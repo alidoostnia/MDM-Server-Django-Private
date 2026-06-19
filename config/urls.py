@@ -23,6 +23,7 @@ from config.swagger import schema_view
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("captcha/", include("captcha.urls")),
     path("api/account/", include("devices.urls")),
     path("api/storage/", include("storage.urls")),
     

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Department, Device, Account
 from django.utils.html import format_html
-from .forms import AccountChangeForm, AccountCreationForm
+from .forms import AccountChangeForm, AccountCreationForm, AdminCaptchaAuthenticationForm
 from django.contrib.auth.admin import UserAdmin
 from django.urls import path, reverse
 from django.contrib import messages
@@ -24,6 +24,7 @@ from policies.deletion_context import allow_policydevice_delete
 # admin.site.site_title = "Admin Dashboard"
 # admin.site.index_title = "Admin Dashboard"
 admin.site.index_template = "admin/custom_index.html"
+admin.site.login_form = AdminCaptchaAuthenticationForm
 
 
 @admin.register(Department)

@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.password_validation import validate_password, get_password_validators
 from django.core.exceptions import ValidationError
 from django.conf import settings
@@ -7,6 +8,21 @@ from django.utils.safestring import mark_safe
 
 from .models import Account
 from .validators import iran_phone_validator
+from captcha.fields import CaptchaField
+
+
+class AdminCaptchaAuthenticationForm(AuthenticationForm):
+    """Require a local CAPTCHA before checking admin credentials."""
+
+    captcha = CaptchaField(label="Verification code")
+
+    def clean(self):
+        if "captcha" not in self.cleaned_data:
+            captcha_errors = self._errors.get("captcha")
+            if captcha_errors:
+                self.add_error(None, captcha_errors[0])
+            return self.cleaned_data
+        return super().clean()
 
 
 class AccountCreationForm(forms.ModelForm):
