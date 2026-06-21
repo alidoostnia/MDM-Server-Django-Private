@@ -135,6 +135,11 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# Require authentication again after 15 minutes without session activity.
+SESSION_COOKIE_AGE = env.int("SESSION_IDLE_TIMEOUT", default=15 * 60)
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
