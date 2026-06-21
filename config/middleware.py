@@ -1,6 +1,38 @@
 from django.urls import reverse
 
 
+class SecurityHeadersMiddleware:
+    """Apply the project's security and no-cache response headers."""
+
+    CONTENT_SECURITY_POLICY = (
+        "default-src 'self' 'unsafe-inline'; "
+        "frame-ancestors 'none'; "
+        "frame-src 'self'; "
+        "form-action 'self'; "
+        "upgrade-insecure-requests; "
+        "block-all-mixed-content"
+    )
+    CACHE_CONTROL = (
+        "must-revalidate, pre-check=0, post-check=0, max-age=0, s-maxage=0"
+    )
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        response["Content-Security-Policy"] = self.CONTENT_SECURITY_POLICY
+        response["Referrer-Policy"] = "no-referrer"
+        response["X-Content-Type-Options"] = "nosniff"
+        response["X-Frame-Options"] = "DENY"
+        # Kept for compliance with legacy clients; modern browsers ignore it.
+        response["X-XSS-Protection"] = "1; mode=block"
+        response["Cache-Control"] = self.CACHE_CONTROL
+        response["Pragma"] = "no-cache"
+        response["Expires"] = "0"
+        return response
+
+
 CAPTCHA_SCRIPT = r"""
 <script>
 (function () {
