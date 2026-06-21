@@ -16,6 +16,11 @@ class AdminCaptchaAuthenticationForm(AuthenticationForm):
 
     captcha = CaptchaField(label="Verification code")
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["username"].widget.attrs["autocomplete"] = "off"
+        self.fields["password"].widget.attrs["autocomplete"] = "off"
+
     def clean(self):
         if "captcha" not in self.cleaned_data:
             captcha_errors = self._errors.get("captcha")
