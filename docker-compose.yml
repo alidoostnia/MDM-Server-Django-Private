@@ -191,7 +191,7 @@ services:
       - app_net
     
   mongodb:
-    image: mongo:6
+    image: mongo:4.4
     container_name: mongo_db
     restart: always
     environment:
