@@ -21,6 +21,8 @@ class SecurityHeadersMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
+        response.headers.pop("Server", None)
+        response.headers.pop("X-Powered-By", None)
         response["Content-Security-Policy"] = self.CONTENT_SECURITY_POLICY
         response["Referrer-Policy"] = "no-referrer"
         response["X-Content-Type-Options"] = "nosniff"
