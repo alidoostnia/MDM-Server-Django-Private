@@ -14,7 +14,7 @@ class SecurityHeadersMiddlewareTest(SimpleTestCase):
             response["Content-Security-Policy"],
             SecurityHeadersMiddleware.CONTENT_SECURITY_POLICY,
         )
-        self.assertEqual(response["Referrer-Policy"], "no-referrer")
+        self.assertEqual(response["Referrer-Policy"], "same-origin")
         self.assertEqual(response["X-Content-Type-Options"], "nosniff")
         self.assertEqual(response["X-Frame-Options"], "DENY")
         self.assertEqual(response["X-XSS-Protection"], "1; mode=block")

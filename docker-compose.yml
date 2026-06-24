@@ -268,8 +268,8 @@ services:
       MONGO_URI: "mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/${MONGO_DB}?authSource=admin"
       LOGS_COLLECTION: device_logs
       MQTT_HOST: mqtt
-    # ports:
-    #   - "8000:8000"
+    ports:
+      - "127.0.0.1:8000:8000"
     networks:
       - web_net
       - app_net

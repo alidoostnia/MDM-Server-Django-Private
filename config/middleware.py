@@ -24,7 +24,7 @@ class SecurityHeadersMiddleware:
         response.headers.pop("Server", None)
         response.headers.pop("X-Powered-By", None)
         response["Content-Security-Policy"] = self.CONTENT_SECURITY_POLICY
-        response["Referrer-Policy"] = "no-referrer"
+        response["Referrer-Policy"] = "same-origin"
         response["X-Content-Type-Options"] = "nosniff"
         response["X-Frame-Options"] = "DENY"
         # Kept for compliance with legacy clients; modern browsers ignore it.

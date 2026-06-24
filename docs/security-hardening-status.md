@@ -35,7 +35,7 @@ API, migration, or access restriction was added.
 | `Access-Control-Allow-Origin` | Intentionally absent | No browser cross-origin use case is defined. Omitting the header prevents browser-based cross-origin access by default. An exact trusted origin should be configured only when such a client is introduced. |
 | `Content-Security-Policy` | Implemented, with limitations | A CSP matching the supplied checklist is emitted. It still allows inline code and contains a deprecated directive; see Section 6. |
 | `Strict-Transport-Security` | Implemented in production | Defaults to 63,072,000 seconds with `includeSubDomains` and `preload` when `DEBUG=False`. It is disabled by default in debug mode. |
-| `Referrer-Policy: no-referrer` | Implemented | Set both in Django settings and response middleware. |
+| `Referrer-Policy: same-origin` | Implemented | Set both in Django settings and response middleware. |
 | `X-Content-Type-Options: nosniff` | Implemented | Enabled through Django and explicitly emitted by the project middleware. |
 | `X-Frame-Options` | Implemented | Set to `DENY`. CSP also uses `frame-ancestors 'none'`. |
 | `X-XSS-Protection: 1; mode=block` | Implemented only for checklist compatibility | This header is obsolete in modern browsers. |
@@ -112,7 +112,7 @@ responses passing through Django:
 
 ```text
 Content-Security-Policy: default-src 'self' 'unsafe-inline'; frame-ancestors 'none'; frame-src 'self'; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content
-Referrer-Policy: no-referrer
+Referrer-Policy: same-origin
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
 X-XSS-Protection: 1; mode=block
