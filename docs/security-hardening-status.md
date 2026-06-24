@@ -84,8 +84,8 @@ equivalent revocation policy.
 
 The following base settings are explicit:
 
-- Session cookies are `HttpOnly` and `SameSite=Lax`.
-- CSRF cookies are `HttpOnly` and `SameSite=Lax`.
+- Session cookies are `HttpOnly` and `SameSite=Strict`.
+- CSRF cookies are `HttpOnly` and `SameSite=Strict`.
 
 `config/production.py` provides environment-aware production defaults:
 
