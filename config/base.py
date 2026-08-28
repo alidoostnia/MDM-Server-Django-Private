@@ -122,6 +122,7 @@ INSTALLED_APPS = [
     "policies",
     "logs",
     "storage",
+    "security_controls",
 ]
 
 MIDDLEWARE = [
@@ -132,6 +133,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "config.middleware.AdminSecurityMiddleware",
     "config.middleware.AdminLoginCaptchaMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -193,6 +195,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},
+    },
+    {
+        "NAME": "devices.validators.ComplexityPasswordValidator",
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
@@ -317,6 +323,9 @@ JAZZMIN_SETTINGS = {
         "logs": "fas fa-file-alt",
         "logs.fakedevicelogsmodel": "fas fa-clipboard-list",
         "policies.pushnotificationlauncher": "fas fa-bell",
+        "security_controls.securitypolicy": "fas fa-user-shield",
+        "security_controls.activesession": "fas fa-sign-out-alt",
+        "security_controls.useractivity": "fas fa-history",
     },
     "hide_models": ["auth.group"],
     "hide_apps": ["token_blacklist"],
@@ -335,6 +344,10 @@ JAZZMIN_SETTINGS = {
         "storage",
         "storage.file",
         "storage.storagesettings",
+        "security_controls",
+        "security_controls.securitypolicy",
+        "security_controls.activesession",
+        "security_controls.useractivity",
         "logs",
         "logs.fakedevicelogsmodel",
     ],

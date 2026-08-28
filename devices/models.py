@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from django.contrib.auth.hashers import make_password
 import uuid
+from datetime import timedelta
 from django.utils import timezone
 from .validators import national_id_validator
 #------------------Department----------------
@@ -83,6 +83,22 @@ class Account(AbstractBaseUser, PermissionsMixin):
     
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    password_changed_at = models.DateTimeField(default=timezone.now)
+    must_change_password = models.BooleanField(
+        default=False,
+        help_text="Require this user to choose a new password at the next admin login.",
+    )
+    password_expiration_days = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        help_text="Optional per-user override. Leave blank to use the Settings policy.",
+    )
+    session_timeout_minutes = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        help_text="Optional per-user override. Leave blank to use the Settings policy.",
+    )
+    active_session_key = models.CharField(max_length=40, blank=True, default="", editable=False)
     
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
@@ -93,7 +109,18 @@ class Account(AbstractBaseUser, PermissionsMixin):
         db_table = "Account"
         
     def set_password(self, raw_password):
-            self.password = make_password(raw_password)
+        super().set_password(raw_password)
+
+    def password_is_expired(self, policy=None):
+        if self.must_change_password:
+            return True
+        if policy is None:
+            from security_controls.models import SecurityPolicy
+            policy = SecurityPolicy.load()
+        days = self.password_expiration_days
+        if days is None:
+            days = policy.password_expiration_days
+        return timezone.now() >= self.password_changed_at + timedelta(days=days)
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

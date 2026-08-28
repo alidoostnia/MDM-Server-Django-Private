@@ -10,10 +10,57 @@ from datetime import datetime, timezone
 # for swagger documentation
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from django.utils import timezone as django_timezone
+
+from security_controls.models import LoginThrottle, SecurityPolicy, UserActivity
 
 
 def timestamp_to_iso(ts):
     return datetime.fromtimestamp(ts, tz=timezone.utc).isoformat()
+
+
+def _record_login_failure(request, username, account=None, reason="invalid_credentials"):
+    locked_until = LoginThrottle.register_failure(username, SecurityPolicy.load())
+    UserActivity.record(
+        request,
+        target_user=account,
+        attempted_username=username,
+        event=(
+            UserActivity.Event.LOGIN_BLOCKED
+            if locked_until
+            else UserActivity.Event.LOGIN_FAILURE
+        ),
+        success=False,
+        details={
+            "channel": "api",
+            "reason": reason,
+            "locked_until": locked_until.isoformat() if locked_until else None,
+        },
+    )
+    return locked_until
+
+
+def _locked_login_response(request, username):
+    locked_until = LoginThrottle.locked_until_for(username)
+    if not locked_until:
+        return None
+    UserActivity.record(
+        request,
+        attempted_username=username,
+        event=UserActivity.Event.LOGIN_BLOCKED,
+        success=False,
+        details={"channel": "api", "locked_until": locked_until.isoformat()},
+    )
+    return Response(
+        {
+            "code": "LOGIN_TEMPORARILY_LOCKED",
+            "error": (
+                "Login is temporarily locked until "
+                f"{django_timezone.localtime(locked_until):%Y-%m-%d %H:%M:%S}."
+            ),
+        },
+        status=status.HTTP_429_TOO_MANY_REQUESTS,
+    )
 
 class AccountLoginAPIView(APIView):
 
@@ -53,15 +100,21 @@ class AccountLoginAPIView(APIView):
         # android_id is now optional & unused
         android_id = serializer.validated_data.get("android_id")
 
+        locked_response = _locked_login_response(request, username)
+        if locked_response:
+            return locked_response
+
         try:
             account = Account.objects.select_related("device").get(username=username)
         except Account.DoesNotExist:
+            _record_login_failure(request, username)
             return Response(
                 {"error": "Invalid username or password"},
                 status=status.HTTP_401_UNAUTHORIZED
             )
 
         if not check_password(password, account.password):
+            _record_login_failure(request, username, account)
             return Response(
                 {"error": "Invalid username or password"},
                 status=status.HTTP_401_UNAUTHORIZED
@@ -71,6 +124,7 @@ class AccountLoginAPIView(APIView):
 
         if device is None:
             if not (account.is_staff or account.is_superuser):
+                _record_login_failure(request, username, account, "device_required")
                 return Response(
                     {
                         "code": "DEVICE_REQUIRED",
@@ -81,6 +135,7 @@ class AccountLoginAPIView(APIView):
             device_id = None
         else:
             if device.imeis != imei:
+                _record_login_failure(request, username, account, "device_mismatch")
                 return Response(
                     {"code": "DEVICE_MISMATCH", "error": "Invalid IMEI"},
                     status=status.HTTP_401_UNAUTHORIZED
@@ -92,6 +147,15 @@ class AccountLoginAPIView(APIView):
 
         account.last_login = datetime.now(timezone.utc)
         account.save(update_fields=["last_login"])
+        LoginThrottle.reset_for(username)
+        UserActivity.record(
+            request,
+            actor=account,
+            target_user=account,
+            attempted_username=username,
+            event=UserActivity.Event.LOGIN_SUCCESS,
+            details={"channel": "api", "device_id": device_id},
+        )
 
         return Response({
             "device_id": device_id,

@@ -44,7 +44,7 @@ class FileAdmin(admin.ModelAdmin):
                 obj.owner.account_id,
                 file_content,
                 entered_name,
-                upload.content_type,
+                obj.content_type,
             )
 
 @admin.register(StorageSettings)

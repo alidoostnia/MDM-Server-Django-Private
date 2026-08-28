@@ -33,3 +33,19 @@
         }
     </style>
 {% endblock %}
+
+{% block extrajs %}
+    {{ block.super }}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("form").forEach(function (form) {
+          if (form.querySelector('input[name*="username" i], input[name*="password" i]')) {
+            form.setAttribute("autocomplete", "off");
+          }
+        });
+        document.querySelectorAll('input[name*="username" i], input[name*="password" i]').forEach(function (input) {
+          input.setAttribute("autocomplete", "off");
+        });
+      });
+    </script>
+{% endblock %}

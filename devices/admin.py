@@ -19,6 +19,7 @@ from .tasks import create_minio_bucket, delete_minio_bucket
 from policies.models import Command
 from policies.tasks import send_command_to_device
 from policies.deletion_context import allow_policydevice_delete
+from security_controls.models import UserActivity
 
 # admin.site.site_header = "MDM Admin Panel"
 # admin.site.site_title = "Admin Dashboard"
@@ -105,27 +106,70 @@ class DeviceAdmin(admin.ModelAdmin):
 @admin.register(Account)
 class AccountAdmin(UserAdmin):
     model = Account
+    form = AccountChangeForm
+    add_form = AccountCreationForm
     list_display = ("username", "first_name", "last_name", "phone_number", "national_id", "is_staff", "is_active", "device_link", "bucket_created", "storage_link", "storage_settings_link")
     list_filter = ("is_staff", "is_active", "bucket_created")
     search_fields = ("username", "phone_number", "national_id")
     ordering = ("username",)
+    readonly_fields = ("password_changed_at", "last_login")
     inlines = [StorageSettingsInline]
-    actions = ["admin_create_bucket", "admin_delete_bucket"]
+    actions = ["admin_create_bucket", "admin_delete_bucket", "force_password_change"]
 
     
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
+        (None, {"fields": ("username", "password", "password_confirmation")}),
         ("Personal info", {"fields": ("first_name", "last_name", "email", "phone_number", "national_id", "device")}),
         ("Permissions", {"fields": ("is_staff", "is_active", "is_superuser", "groups", "user_permissions")}),
+        ("Security policy", {"fields": ("must_change_password", "password_changed_at", "password_expiration_days", "session_timeout_minutes")}),
         ("Important dates", {"fields": ("last_login",)}),
         ("Storage Info", {"fields": ("bucket_created",)}),
     )
     add_fieldsets = (
         (None, {
             "classes": ("wide",),
-            "fields": ("username", "first_name", "last_name", "email", "phone_number", "national_id",  "device", "password1", "password2", "is_staff", "is_active"),
+            "fields": ("username", "first_name", "last_name", "email", "phone_number", "national_id", "device", "password", "password_confirmation", "is_staff", "is_active"),
         }),
     )
+
+    def save_model(self, request, obj, form, change):
+        previous_hash = None
+        password_was_set = bool(form.cleaned_data.get("password"))
+        if change and password_was_set:
+            previous_hash = Account.objects.only("password").get(pk=obj.pk).password
+            obj.must_change_password = obj.pk != request.user.pk
+        elif not change:
+            obj.must_change_password = True
+
+        super().save_model(request, obj, form, change)
+
+        if previous_hash:
+            from security_controls.services import retain_previous_password
+            retain_previous_password(obj, previous_hash)
+        if password_was_set or not change:
+            UserActivity.record(
+                request,
+                actor=request.user,
+                target_user=obj,
+                event=UserActivity.Event.PASSWORD_ADMIN_SET,
+                details={
+                    "new_account": not change,
+                    "forced_at_next_login": obj.must_change_password,
+                },
+            )
+
+    @admin.action(description="Force selected users to change password at next login")
+    def force_password_change(self, request, queryset):
+        users = list(queryset)
+        count = queryset.update(must_change_password=True)
+        for user in users:
+            UserActivity.record(
+                request,
+                actor=request.user,
+                target_user=user,
+                event=UserActivity.Event.FORCE_PASSWORD_CHANGE,
+            )
+        self.message_user(request, f"Password change required for {count} user(s).")
     
     @admin.display(description="Storage Settings")
     def storage_settings_link(self, obj):

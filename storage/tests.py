@@ -1,5 +1,6 @@
 from unittest.mock import patch
 import uuid
+from io import BytesIO
 
 from botocore.exceptions import ClientError, EndpointConnectionError
 from django.urls import reverse
@@ -153,7 +154,13 @@ class CompleteUploadAPITestCase(APITestCase):
             uploaded=False,
         )
         mock_s3 = mock_get_s3_client.return_value
-        mock_s3.head_object.return_value = {"ContentLength": 2048}
+        mock_s3.head_object.return_value = {
+            "ContentLength": 2048,
+            "ContentType": "application/pdf",
+        }
+        mock_s3.get_object.return_value = {
+            "Body": BytesIO(b"%PDF-1.7\nverified test document")
+        }
 
         response = self.client.post(self.url, {"file_id": str(file_record.file_id)}, format="json")
 
@@ -162,6 +169,33 @@ class CompleteUploadAPITestCase(APITestCase):
         self.assertTrue(file_record.uploaded)
         self.assertEqual(file_record.size, 2048)
         self.assertIsNotNone(file_record.uploaded_at)
+
+    @patch("storage.views.get_s3_client")
+    def test_complete_upload_rejects_content_that_does_not_match_extension(self, mock_get_s3_client):
+        file_record = File.objects.create(
+            owner=self.account,
+            object_name="uploads/fake.pdf",
+            original_name="fake.pdf",
+            content_type="application/pdf",
+            size=0,
+            uploaded=False,
+        )
+        mock_s3 = mock_get_s3_client.return_value
+        mock_s3.head_object.return_value = {
+            "ContentLength": 18,
+            "ContentType": "application/pdf",
+        }
+        mock_s3.get_object.return_value = {"Body": BytesIO(b"plain text content")}
+
+        response = self.client.post(
+            self.url,
+            {"file_id": str(file_record.file_id)},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(File.objects.filter(pk=file_record.pk).exists())
+        mock_s3.delete_object.assert_called_once()
 
     def test_complete_upload_missing_file_id(self):
         response = self.client.post(self.url, {}, format="json")

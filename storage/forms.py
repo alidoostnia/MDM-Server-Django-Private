@@ -1,6 +1,7 @@
 from django import forms
 from .models import File
 from django.core.exceptions import ValidationError
+from .validators import validate_file_content
 
 class FileAdminForm(forms.ModelForm):
     upload_file = forms.FileField(required=True)
@@ -30,4 +31,15 @@ class FileAdminForm(forms.ModelForm):
                     'original_name',
                     f"Extension mismatch: expected '.{uploaded_ext}' but got '.{entered_ext}'."
                 )
+            else:
+                content = upload_file.read()
+                upload_file.seek(0)
+                try:
+                    cleaned_data["content_type"] = validate_file_content(
+                        original_name,
+                        content,
+                        upload_file.content_type,
+                    )
+                except ValidationError as exc:
+                    self.add_error("upload_file", exc)
         return cleaned_data

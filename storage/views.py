@@ -14,6 +14,9 @@ from .permissions import CanDeleteFiles, CanUploadFiles, CanReadFiles
 from .models import File
 from .utils import get_s3_client
 from urllib.parse import urlparse, urlunparse
+from django.core.exceptions import ValidationError
+
+from .validators import ensure_supported_extension, validate_file_content
 
 
 @swagger_auto_schema(
@@ -89,6 +92,11 @@ def generate_presigned_upload(request):
     
     if future_usage_mb > limit_mb:
         return Response({'msg': 'Storage limit exceeded'}, status=status.HTTP_403_FORBIDDEN)
+
+    try:
+        ensure_supported_extension(file_name)
+    except ValidationError as exc:
+        return Response({'msg': exc.messages[0]}, status=status.HTTP_400_BAD_REQUEST)
     
     file_path = file_name
     dir_name = os.path.dirname(file_path)
@@ -204,10 +212,40 @@ def complete_upload(request):
     except ClientError:
         return Response({'msg': 'object not found in storage'}, status=404)
 
+    try:
+        stored_object = s3.get_object(
+            Bucket=bucket,
+            Key=file.object_name,
+            Range="bytes=0-65535",
+        )
+        sample = stored_object["Body"].read(65536)
+        verified_type = validate_file_content(
+            file.original_name,
+            sample,
+            head.get("ContentType") or file.content_type,
+        )
+    except ValidationError as exc:
+        try:
+            s3.delete_object(Bucket=bucket, Key=file.object_name)
+        except ClientError:
+            return Response(
+                {'msg': 'Upload was rejected, but storage cleanup failed'},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+        file._skip_storage_delete = True
+        file.delete()
+        return Response(
+            {'msg': f"Upload rejected: {exc.messages[0]}"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    except (ClientError, KeyError, AttributeError, TypeError):
+        return Response({'msg': 'Could not inspect uploaded file content'}, status=500)
+
     file.size = head.get('ContentLength')
+    file.content_type = verified_type
     file.uploaded = True
     file.uploaded_at = timezone.now()
-    file.save()
+    file.save(update_fields=("size", "content_type", "uploaded", "uploaded_at"))
     return Response({'msg': 'ok'}, status=200)
 
 

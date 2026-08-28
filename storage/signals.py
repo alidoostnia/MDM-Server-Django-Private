@@ -5,4 +5,6 @@ from .tasks import delete_minio_object
 
 @receiver(post_delete, sender=File)
 def delete_object_from_minio(sender, instance: File, **kwargs):
+    if getattr(instance, "_skip_storage_delete", False):
+        return
     delete_minio_object.delay(instance.owner.account_id, instance.object_name)
